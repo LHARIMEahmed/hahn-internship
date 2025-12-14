@@ -1,29 +1,58 @@
 package com.example.hahn_internship.service;
+
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.function.Function;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.example.hahn_internship.model.User;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
-    // Clé secrète simple
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    private final long expiration = 1000 * 60 * 60; // 1h
-    // Génération du token JWT
+    @Value("${jwt.secret}")
+    private String secret;
+
+    @Value("${jwt.expiration}")
+    private long expiration;
+
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
+
     public String generateToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .claim("userId", user.getId())
-                .signWith(key)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> resolver) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return resolver.apply(claims);
+    }
+
+    public boolean isTokenValid(String token, User user) {
+        return extractUsername(token).equals(user.getEmail())
+                && extractClaim(token, Claims::getExpiration).after(new Date());
     }
 }
