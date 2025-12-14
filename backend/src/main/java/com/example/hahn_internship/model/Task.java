@@ -1,33 +1,30 @@
 package com.example.hahn_internship.model;
 
-import java.util.List;
+import java.util.Date;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 
 @Entity
-public class Project {
+public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private long id;
     private String title;
     private String description;
+    private Date dueDate;
+    private boolean completed=false;
 
     @ManyToOne
-    private User user;
+    private Project project;
 
-    @OneToMany(mappedBy = "project")
-    private List<Task> tasks;
-
-
-    public Long getId() {
+    public long getId() {
         return id;
     }
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
     public String getTitle() {
@@ -42,10 +39,23 @@ public class Project {
     public void setDescription(String description) {
         this.description = description;
     }
-    public User getUser() {
-        return user;
+    public Date getDueDate() {
+        return dueDate;
     }
-    public void setUser(User user) {
-        this.user = user;
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
     }
+    public boolean isCompleted() {
+        return completed;
+    }
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+    public Project getProject() {
+        return project;
+    }
+    public void setProject(Project project) {
+        this.project = project;
+    }
+    
 }

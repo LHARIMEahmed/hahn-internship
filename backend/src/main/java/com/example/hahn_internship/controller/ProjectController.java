@@ -34,8 +34,8 @@ public class ProjectController {
 
     @PostMapping
     public ResponseEntity<ProjectResponse> createProject(@RequestBody ProjectRequest request,
-                                                         @AuthenticationPrincipal User user) {
-        Project project = projectService.createProject(request, user);
+                                                         @AuthenticationPrincipal UserDetails userDetails) {
+        Project project = projectService.createProject(request, userDetails);
         return ResponseEntity.ok(new ProjectResponse(project.getId(), project.getTitle(), project.getDescription()));
     }
 
