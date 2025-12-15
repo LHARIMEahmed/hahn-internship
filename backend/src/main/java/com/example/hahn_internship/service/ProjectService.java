@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,20 +13,25 @@ import com.example.hahn_internship.dto.ProjectRequest;
 import com.example.hahn_internship.model.Project;
 import com.example.hahn_internship.model.User;
 import com.example.hahn_internship.repository.ProjectRepository;
+import com.example.hahn_internship.repository.UserRepository;
 
 @Service
 public class ProjectService {
 
     @Autowired
     private ProjectRepository projectRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * Create a new project for a user
      */
-    public Project createProject(ProjectRequest request, User user) {
+    public Project createProject(ProjectRequest request, UserDetails userDetails) {
         if (!StringUtils.hasText(request.getTitle())) {
             throw new IllegalArgumentException("Project title cannot be empty");
         }
+        User user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         Project project = new Project();
         project.setTitle(request.getTitle());
