@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import ProjectDetails from "./pages/ProjectDetails";
 import Login from "./components/Login";
+import Register from "./components/Register"; // <-- import Register
 import { useState, useEffect } from "react";
 
 export default function App() {
@@ -19,25 +20,37 @@ export default function App() {
   const handleLogin = (jwt, userEmail) => {
     setToken(jwt);
     setEmail(userEmail);
-    localStorage.setItem("token", jwt);    // persist token
-    localStorage.setItem("email", userEmail); // persist email
+    localStorage.setItem("token", jwt);
+    localStorage.setItem("email", userEmail);
   };
 
   const handleLogout = () => {
     setToken(null);
     setEmail(null);
-    localStorage.removeItem("token");  // clear token
-    localStorage.removeItem("email");  // clear email
+    localStorage.removeItem("token");
+    localStorage.removeItem("email");
   };
 
   return (
     <BrowserRouter>
       <Routes>
         {!token ? (
-          <Route
-            path="*"
-            element={<Login onLogin={handleLogin} />}
-          />
+          <>
+            {/* Login route */}
+            <Route
+              path="/login"
+              element={<Login onLogin={handleLogin} />}
+            />
+
+            {/* Register route */}
+            <Route
+              path="/register"
+              element={<Register />}
+            />
+
+            {/* Redirect all unknown routes to login */}
+            <Route path="*" element={<Navigate to="/login" />} />
+          </>
         ) : (
           <>
             <Route

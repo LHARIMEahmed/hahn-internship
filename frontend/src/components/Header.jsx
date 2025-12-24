@@ -12,7 +12,7 @@ export default function Header({ onLogout, onAddProject }) {
             onClick={onAddProject}
             className="px-4 py-2 rounded bg-green-500 hover:bg-green-600"
           >
-            + Projet
+            + Project
           </button>
         )}
 
@@ -25,12 +25,14 @@ export default function Header({ onLogout, onAddProject }) {
             <Menu.Item>
               {({ active }) => (
                 <button
-                  onClick={onLogout}
+                  onClick={() => {
+                    if (onLogout) onLogout(); // call the logout handler
+                  }}
                   className={`${
                     active ? "bg-gray-100" : ""
                   } w-full text-left px-4 py-2 text-sm text-gray-700`}
                 >
-                  Déconnexion
+                  Logout
                 </button>
               )}
             </Menu.Item>
