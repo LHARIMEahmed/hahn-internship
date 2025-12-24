@@ -35,8 +35,9 @@ spring.datasource.username=root
 spring.datasource.password=YOUR_PASSWORD
 spring.jpa.show-sql=true
 The generated tables will include: user, project, task, and their relationships.
+```
 
-Running the Backend
+# Running the Backend
 Navigate to the backend directory:
 Bashcd backend
 Build the project with Maven:
@@ -45,7 +46,7 @@ Start the Spring Boot application:
 Bashmvn spring-boot:run
 The backend API will be available at http://localhost:8081.
 
-Running the Frontend
+# Running the Frontend
 Navigate to the frontend directory:
 Bashcd frontend
 Install dependencies:
