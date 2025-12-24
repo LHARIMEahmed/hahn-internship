@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function Register({ onSwitchToLogin }) {
+export default function Register() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -8,6 +9,8 @@ export default function Register({ onSwitchToLogin }) {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,7 +25,7 @@ export default function Register({ onSwitchToLogin }) {
         body: JSON.stringify({ firstName, lastName, email, password }),
       });
 
-      if (!res.ok) throw new Error("Erreur lors de l'inscription");
+      if (!res.ok) throw new Error("Error during registration");
 
       setSuccess(true);
     } catch (err) {
@@ -32,47 +35,56 @@ export default function Register({ onSwitchToLogin }) {
     }
   };
 
+  const handleSwitchToLogin = () => {
+    navigate("/login"); // navigate to login page
+  };
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       <div className="hidden md:flex flex-1 bg-gradient-to-br from-green-600 to-teal-700 items-center justify-center p-16">
         <div className="text-white max-w-lg">
-          <h1 className="text-5xl font-extrabold mb-6">Créer un compte</h1>
+          <h1 className="text-5xl font-extrabold mb-6">Create an Account</h1>
         </div>
       </div>
 
       <div className="flex-1 flex items-center justify-center p-6 bg-gray-50">
         <div className="w-full max-w-md bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-gray-200">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Inscription</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Register</h2>
+
           {error && (
-            <div className="mb-4 rounded-lg bg-red-100 text-red-700 px-4 py-2 text-sm animate-pulse">{error}</div>
+            <div className="mb-4 rounded-lg bg-red-100 text-red-700 px-4 py-2 text-sm animate-pulse">
+              {error}
+            </div>
           )}
           {success && (
             <div className="mb-4 rounded-lg bg-green-100 text-green-700 px-4 py-2 text-sm animate-pulse">
-              Compte créé avec succès ! Cliquez pour{" "}
-              <button onClick={onSwitchToLogin} className="underline font-semibold">connexion</button>
+              Account created successfully! Click{" "}
+              <button onClick={handleSwitchToLogin} className="underline font-semibold">
+                here to login
+              </button>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">Prénom</label>
+              <label className="block text-sm font-medium text-gray-600 mb-1">First Name</label>
               <input
                 type="text"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Prénom"
+                placeholder="First Name"
                 required
                 className="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">Nom</label>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Last Name</label>
               <input
                 type="text"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                placeholder="Nom"
+                placeholder="Last Name"
                 required
                 className="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
               />
@@ -84,14 +96,14 @@ export default function Register({ onSwitchToLogin }) {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="email@exemple.com"
+                placeholder="email@example.com"
                 required
                 className="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">Mot de passe</label>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Password</label>
               <input
                 type="password"
                 value={password}
@@ -107,14 +119,17 @@ export default function Register({ onSwitchToLogin }) {
               disabled={loading}
               className="w-full py-3 rounded-xl bg-green-600 text-white font-semibold hover:bg-green-700 transition disabled:opacity-50"
             >
-              {loading ? "Inscription..." : "S'inscrire"}
+              {loading ? "Registering..." : "Register"}
             </button>
           </form>
 
           <div className="mt-6 text-center text-sm text-gray-500">
-            Déjà un compte ?{" "}
-            <button onClick={onSwitchToLogin} className="text-green-600 font-semibold hover:underline">
-              Se connecter
+            Already have an account?{" "}
+            <button
+              onClick={handleSwitchToLogin}
+              className="text-green-600 font-semibold hover:underline"
+            >
+              Login
             </button>
           </div>
         </div>
